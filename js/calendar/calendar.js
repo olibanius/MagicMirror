@@ -68,6 +68,10 @@ calendar.processEvents = function (url, events) {
 			var endDate = moment(e.endDate);
 		}
 
+		var summary = e.SUMMARY;
+		if (summary.length > 25) {
+			summary = summary.substring(0, 25)+'..';
+		}
 		//only add fututre events, days doesn't work, we need to check seconds
 		if (seconds >= 0) {
 			if (seconds <= 60*60*5 || seconds >= 60*60*24*2) {
@@ -76,7 +80,7 @@ calendar.processEvents = function (url, events) {
 				var time_string = moment(startDate).calendar()
 			}
 			if (!e.RRULE) {
-				this.eventList.push({'description':e.SUMMARY,'seconds':seconds,'days':time_string,'url': url, symbol: this.calendarSymbol});
+				this.eventList.push({'description':summary,'seconds':seconds,'days':time_string,'url': url, symbol: this.calendarSymbol});
 			}
 			e.seconds = seconds;
 		} else if  (endSeconds > 0) {
@@ -87,7 +91,7 @@ calendar.processEvents = function (url, events) {
 				var time_string = this.longRunningText + ' ' + moment(endDate).calendar()
 			}
 			if (!e.RRULE) {
-				this.eventList.push({'description':e.SUMMARY,'seconds':seconds,'days':time_string,'url': url, symbol: this.calendarSymbol});
+				this.eventList.push({'description':summary,'seconds':seconds,'days':time_string,'url': url, symbol: this.calendarSymbol});
 			}
 			e.seconds = endSeconds;
 		}
@@ -112,7 +116,7 @@ calendar.processEvents = function (url, events) {
 					} else {
 						var time_string = moment(dt).calendar()
 					}
-					this.eventList.push({'description':e.SUMMARY,'seconds':seconds,'days':time_string,'url': url, symbol: this.calendarSymbol});
+					this.eventList.push({'description':summary,'seconds':seconds,'days':time_string,'url': url, symbol: this.calendarSymbol});
 				}
 			}
 		}
