@@ -97,7 +97,7 @@ weather.updateCurrentWeather = function () {
 				_newSunHtml = '<span class="sun"><span class="wi wi-sunset xdimmed"></span> ' + _sunset + '</span>';
 			}
 
-			$(this.windSunLocation).updateWithText(_newWindHtml + ' ' + _newSunHtml,this.fadeInterval);
+			$(this.windSunLocation).updateWithText(this.params.q + '<br/>' + _newWindHtml + ' ' + _newSunHtml,this.fadeInterval);
 
 		}.bind(this),
 		error: function () {
@@ -129,7 +129,7 @@ weather.updateWeatherForecast = function () {
 			for (var i = 0, count = data.list.length; i < count; i++) {
 
 				var _forecast = data.list[i];
-				
+
 				if (this.orientation == 'vertical') {
 					_forecastHtml2 = '';
 					_forecastHtml3 = '';
@@ -151,7 +151,7 @@ weather.updateWeatherForecast = function () {
 			_forecastHtml2 += '</tr>',
 			_forecastHtml3 += '</tr>',
 			_forecastHtml4 += '</tr>';
-			
+
 			if (this.orientation == 'vertical') {
 				_forecastHtml += '</table>';
 			} else {
