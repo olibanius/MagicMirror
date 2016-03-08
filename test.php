@@ -8,6 +8,13 @@
 </style>
 </head>
 <body>
+  <?php
+  $name = $_GET['name'];
+  $x = shell_exec('/usr/bin/fswebcam '.$name);
+  var_dump($x);
+  //echo file_get_contents("localhost://picture.php?name=sune");
+  ?>
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.2.1/annyang.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script>
@@ -77,18 +84,7 @@ if (annyang) {
     'take picture': function(cmd) {
       responsiveVoice.speak('Smile! - Taking picture.');
       var name = 'test.jpg';
-      var url = "localhost://picture.php?name=sune";
-      var output = $.getJSON(url, function(giphyresult) {
-          console.log(giphyresult);
-      });
-      <?php
-      $name = $_GET['name'];
-      //$x = shell_exec('/usr/bin/fswebcam '.$name);
-      //var_dump($x);
-      //echo file_get_contents("localhost://picture.php?name=sune");
-      ?>
-      //var element = $('<?php echo file_get_contents("localhost://picture.php?name=sune"); ?>')
-      //var element = $('<img src="bad-weather.jpg" id="weather" alt="weather">');
+      var element = $('<img src="bad-weather.jpg" id="weather" alt="weather">');
       //var element = '<iframe src="localhost://picture.php?name='+name+'">';
       addElement(element, false);
     }
