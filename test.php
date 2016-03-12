@@ -9,7 +9,7 @@
 </head>
 <body>
   <?php
-  $name = $_GET['name'];
+  $name = 'testfoto.jpg';
   $x = shell_exec('/usr/bin/fswebcam '.$name);
   var_dump($x);
   //echo file_get_contents("localhost://picture.php?name=sune");

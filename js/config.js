@@ -48,6 +48,14 @@ var config = {
 			symbol: 'soccer-ball-o',
 			url: 'https://www.google.com/calendar/ical/akvbisn5iha43idv0ktdalnor4%40group.calendar.google.com/public/basic.ics',
 		},
+		{
+			symbol: 'tv',
+            url: 'http://showrss.info/ical.php?user_id=284017',
+		},
+        {
+			symbol: 'calendar-plus-o',
+			url: 'https://calendar.google.com/calendar/ical/fredrik.safsten%40gmail.com/public/basic.ics'
+		},
 		// {
 			// symbol: 'mars',
 			// url: "https://server/url/to/his.ics",

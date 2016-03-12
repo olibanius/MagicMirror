@@ -14,6 +14,39 @@
 	<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
+<?php
+$rpID = exec("SERIAL=\"$(cat /proc/cpuinfo | grep Serial | cut -d ':' -f 2)\"; echo \$SERIAL");
+$rpID = 'xxx'; // FOR TEST ONLY
+$url = "https://www.wakakuu.com/getConfig.php?rpid=".$rpID;
+$conf = file_get_contents($url);
+?>
+<script>
+//var config = <?php echo $conf; ?>;
+//console.log(config.name);
+</script>
+
+<div id="rpid" style="display: none"><?php echo $rpID; ?></div>
+
+<?php if( isset($_SERVER['HTTPS'])): ?>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.2.1/annyang.min.js"></script>
+	<script>
+	if (annyang) {
+	  // Let's define our first command. First the text we expect, and then the function it should call
+	  var commands = {
+	    'show tps report': function() {
+	      $('#tpsreport').animate({bottom: '-100px'});
+				console.log('TPS REPORT!');
+	    }
+	  };
+
+	  // Add our commands to annyang
+	  annyang.addCommands(commands);
+
+	  // Start listening. You can call this here, or attach this call to an event, button, etc.
+	  annyang.start();
+	}
+	</script>
+<?php endif; ?>
 
 	<div class="top right">
 		<div class="windsun small dimmed"></div>
