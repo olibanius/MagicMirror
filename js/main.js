@@ -45,9 +45,10 @@ jQuery(document).ready(function($) {
 	// 	}
 	// });
 
-	version.init();
+	//version.init();
 
-	time.init();
+	/*
+    time.init();
 
 	calendar.init();
 
@@ -56,5 +57,6 @@ jQuery(document).ready(function($) {
 	weather.init();
 
 	news.init();
+    */
 
 });
