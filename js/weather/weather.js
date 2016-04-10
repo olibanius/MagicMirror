@@ -29,7 +29,7 @@ var weather = {
 	apiBase: 'http://api.openweathermap.org/data/',
 	weatherEndpoint: 'weather',
 	forecastEndpoint: 'forecast/daily',
-	updateInterval: config.weather.interval || 6000,
+	updateInterval: config.weather.interval || 99910000,
 	fadeInterval: config.weather.fadeInterval || 1000,
 	intervalId: null,
 	orientation: config.weather.orientation || 'vertical',
@@ -179,9 +179,13 @@ weather.init = function () {
 	}
 
 	this.intervalId = setInterval(function () {
+		console.log('Fetching current weather');
 		this.updateCurrentWeather();
-		this.updateWeatherForecast();
-	}.bind(this), this.updateInterval);
+        setTimeout(function() {
+		    console.log('Fetching forecast');
+            this.updateWeatherForecast();
+	    }, 3000);
+    }.bind(this), this.updateInterval);
 	this.updateCurrentWeather();
 	this.updateWeatherForecast();
 }

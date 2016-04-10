@@ -1,13 +1,4 @@
 <?php
-echo '{"employees":[
-    {"firstName":"John", "lastName":"Doe"},
-    {"firstName":"Anna", "lastName":"Smith"},
-    {"firstName":"Peter", "lastName":"Jones"}
-]}';
-die;
-echo 'vad';
-$name = $_GET['name'];
-$x = shell_exec('/usr/bin/fswebcam '.$name);
-var_dump('hej', $x);
-echo "<img src=\"$name\">";
-echo "<img src=\"test.jpg">";
+$name = "selfies/selfie-".date('Y-m-d_H-i-s').".jpg";
+shell_exec('/var/www/html/picture.sh /var/www/html/'.$name);
+echo json_encode($name);
