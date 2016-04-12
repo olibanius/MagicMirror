@@ -147,38 +147,39 @@
 				case 'show weather':
 					console.log('Showing weather');
 					responsiveVoice.speak("Showing weather");
-			var element = $('<div id="weather"><div class="temp"></div><div class="windsun small dimmed"></div><div class="forecast small dimmed"></div></div>');
+			var element = $('<div id="weather"><div class="temp"></div></div>');
 					addElement(element, false);
 					weather.init();
 				break;
 				case 'show datetime':
 					responsiveVoice.speak("Showing datetime");
-					var element = $('<div id="datetime"><div class="time" id="time"></div><div class="date small dimmed"></div></div>');
+					var element = $('<div id="datetime"><div class="time" id="time"></div></div>');
 					addElement(element, false);
 					time.init();
 				break;
 				case 'show calendar':
 					responsiveVoice.speak("Showing calendar");
-					var element = $('<div id="calendar" class="calendar xxsmall"></div>');
+					var element = $('<div id="calendar"></div>');
 					addElement(element, false);
 					calendar.init();
 				break;
 				case 'show compliment':
 					responsiveVoice.speak("Showing compliment");
-					var element = $('<div id="compliment" class="compliment light"></div>');
+					var element = $('<div id="compliment"></div>');
 					addElement(element, false);
 					compliments.init();
 				break;
 				case 'show news':
 					responsiveVoice.speak("Showing news");
-					var element = $('<div id="news" class="news medium"></div>');
+					var element = $('<div id="news"></div>');
 					addElement(element, false);
 					news.init();
 				break;
 				case 'show commute':
-					responsiveVoice.speak('Showing commute');
-					var element = $('<div id="commute" class="small dimmed"><iframe border="0" src="vasttrafik.php"></div>');
-					addElement(element, false);
+					var element = $('<div id="commute"><iframe border="0" src="vasttrafik.php"></div>');
+					if (addElement(element, false)) {
+						responsiveVoice.speak('Showing commute');
+					}
 				break;
 				case 'sticky':
 					console.log('sticky '+arg2);
@@ -264,9 +265,8 @@
 		function timerIncrement() {
 		    idleTime = idleTime + 1;
 				console.log(idleTime);
-		    if (idleTime >= 10) {
-		        console.log('Should start motion detection now.');
-						motionDetectorStart();
+		    if (idleTime >= 2) {
+		      	motionDetectorStart();
 						idleTime = 0;
 						$('#bg').animate({ opacity: 0 }, 1000);
 		    }
@@ -299,7 +299,14 @@
     function addElement(element, keep) {
         var name = element.selector;
         elementList.push(element);
-        showElement(element);
+        var success = showElement(element);
+				if (!success) {
+					console.log('All slots are busy, sorry.');
+					responsiveVoice.speak('All slots are busy, sorry.');
+				}
+				return success;
+
+				/* Old crap?
         if (keep) {
           keepElements.push(element);
         } else {
@@ -321,26 +328,24 @@
             }
          }, 15000 );
        }
+			 */
     }
 
-    function showElement(element) {
-        // Find first open slot
-        var done = false;
-        $('body').find("div.slot").each(function(slot, lmnt) {
-            if (!done) {
-                var slot = $(lmnt);
-                if (slot.html() == '') {
-                    slot.html(element);
-                    slot.show();
-                    done = true;
-                }
-            }
-        });
-				if (!done) {
-					console.log('All slots are busy, sorry.');
-				}
-        // TODO: fixa vad som händer när alla slots är fyllda
-    }
+		function showElement(element) {
+				// Find first open slot
+				var done = false;
+				$('body').find("div.slot").each(function(slot, lmnt) {
+						if (!done) {
+								var slot = $(lmnt);
+								if (slot.html() == '') {
+										slot.html(element);
+										slot.show();
+										done = true;
+								}
+						}
+				});
+				return done;
+		}
 
     function findAndHide(elementName) {
         var done = false;
