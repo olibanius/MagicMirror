@@ -62,7 +62,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src='https://code.responsivevoice.org/responsivevoice.js'></script>
 
-    <script>
+		<script>
+		function motionDetectorStart() {
+ 			var core = new MotionDetector.Core();
+		}
+		</script>
+		<script type="text/javascript" src="js/global.js"></script>
+		<script type="text/javascript" src="js/MotionDetector/WebCamCapture.js"></script>
+		<script type="text/javascript" src="js/MotionDetector/ImageCompare.js"></script>
+		<script type="text/javascript" src="js/MotionDetector/Core.js"></script>
+
+		<script>
     if (annyang) {
       var commands = {
         'dictate *text': function(arg2) {
@@ -240,8 +250,8 @@
 		var idleTime = 0;
 		$(document).ready(function () {
 		    //Increment the idle time counter every minute.
-		    //var idleInterval = setInterval(timerIncrement, 60000); // 1 minute
-				var idleInterval = setInterval(timerIncrement, 1000);
+		    var idleInterval = setInterval(timerIncrement, 60000); // 1 minute
+				//var idleInterval = setInterval(timerIncrement, 1000);
 		    //Zero the idle timer on mouse movement.
 		    $(this).mousemove(function (e) {
 		        idleTime = 0;
@@ -255,7 +265,8 @@
 		    idleTime = idleTime + 1;
 				console.log(idleTime);
 		    if (idleTime >= 10) {
-		        console.log('Should start motion detection now.')
+		        console.log('Should start motion detection now.');
+						motionDetectorStart();
 						idleTime = 0;
 						$('#bg').animate({ opacity: 0 }, 1000);
 		    }
@@ -405,18 +416,20 @@ jQuery(document).ready(function($) {
 </script>
 
 <div id="bg">
-<div>
-	<a style="font-size: 12px; clear: both;" href="#" onclick="location.reload()">debug</a>
-</div>
-<span id="text" class="text" style="white-space: pre-wrap;"></span>
-<div class="slot" id="slot1" style="display: none; float: left; clear: left"></div>
-<div class="slot" id="slot2" style="display: none; float: right; clear: right"></div>
-<div class="slot" id="slot3" style="display: none; float: left; clear: left"></div>
-<div class="slot" id="slot3" style="display: none; float: right; clear: right"></div>
-<div class="slot" id="slot5" style="display: none; float: left; clear: left"></div>
-<div class="slot" id="slot6" style="display: none; float: right; clear: right"></div>
-<div class="slot" id="slot7" style="display: none; float: left; clear: left"></div>
-<div class="slot" id="slot8" style="display: none; float: right; clear: right"></div>
+	<video style="display: none" id="webCamWindow" autoplay></video>
+ 	<div style="display: none" id="movement"></div>
+	<div>
+		<a style="font-size: 12px; clear: both;" href="#" onclick="location.reload()">debug</a>
+	</div>
+	<span id="text" class="text" style="white-space: pre-wrap;"></span>
+	<div class="slot" id="slot1" style="display: none; float: left; clear: left"></div>
+	<div class="slot" id="slot2" style="display: none; float: right; clear: right"></div>
+	<div class="slot" id="slot3" style="display: none; float: left; clear: left"></div>
+	<div class="slot" id="slot3" style="display: none; float: right; clear: right"></div>
+	<div class="slot" id="slot5" style="display: none; float: left; clear: left"></div>
+	<div class="slot" id="slot6" style="display: none; float: right; clear: right"></div>
+	<div class="slot" id="slot7" style="display: none; float: left; clear: left"></div>
+	<div class="slot" id="slot8" style="display: none; float: right; clear: right"></div>
 </div>
 
 <script src="js/jquery.js"></script>
