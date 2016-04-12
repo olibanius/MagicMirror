@@ -17,9 +17,7 @@
             height: 75%;
         }
 				.image{
-   				width: 100px;
-				  height: 100px;
-				  position: relative;
+   				position: relative;
 				  top: 0;
 				  left: 0;
 				}
@@ -33,6 +31,20 @@
 					display: none;
 				}
 
+				#bg {
+				  // so if user scrolls it doesn't matter
+				  position: fixed;
+				  background-color: black;
+
+				  // expand to height & width
+				  height: 100%;
+				  width: 100%;
+				  margin: 0;
+				  padding:0;
+
+				  // hidden initially
+				  opacity: 0;
+				}
 	</style>
 	<link rel="stylesheet" type="text/css" href="css/weather-icons.css">
 	<link rel="stylesheet" type="text/css" href="css/font-awesome.css">
@@ -53,134 +65,206 @@
     <script>
     if (annyang) {
       var commands = {
-        'show tps report': function() {
-          console.log('Showing tps report');
-          var element = $('<img src="tpscover.jpg" id="tpsreport" alt="tpsreport">');
-          addElement(element, false);
-        },
-        'dictate *text': function(stuff) {
-          console.log('text! '+stuff);
-          responsiveVoice.speak('Dictating '+stuff);
-          $('#text').text(stuff);
-        },
+        'dictate *text': function(arg2) {
+					executeCommand('dictate', arg2);
+				},
         'test': function() {
-          console.log('test');
-          responsiveVoice.speak('Na zdorovje!', 'Russian Female');
-          responsiveVoice.speak('Hirven Mulkkuu!', 'Finnish Female');
-        },
+					executeCommand('test');
+				},
         'sticky *that': function(that) {
-          console.log('sticky '+that);
-          responsiveVoice.speak('Will now stick '+that);
-          keepElement(that);
-        },
+					executeCommand('sticky', that)
+				},
         'drop *that': function(that) {
-          console.log('drop '+that);
-          responsiveVoice.speak('Will now be dropping '+that);
-          findAndHide(that);
-        },
+					executeCommand('drop', that);
+		    },
         'help': function() {
-          console.log('Showing help');
-          responsiveVoice.speak("Showing help");
-          responsiveVoice.speak("Visar hjelp", 'Swedish Female');
-          var help = '';
-          $.each(commands_str, function(index, value ) {
-            help +=  value + "<br/>";
-          });
-          //$('#text').text("Here is help...\n\n"+help);
-          var element = $('<div id="help" class="text">'+help+'</div>');
-          addElement(element, false);
+        	executeCommand('help');
         },
         'show weather': function(cmd) {
-          console.log('Showing weather');
-          responsiveVoice.speak("Showing weather");
-		  var element = $('<div id="weather"><div class="temp"></div><div class="windsun small dimmed"></div><div class="forecast small dimmed"></div></div>');
-          addElement(element, false);
-          weather.init();
-        },
+					executeCommand('show weather');
+	      },
         'show datetime': function(cmd) {
-          responsiveVoice.speak("Showing datetime");
-          var element = $('<div id="datetime"><div class="time" id="time"></div><div class="date small dimmed"></div></div>');
-          addElement(element, false);
-          time.init();
+    			executeCommand('show datetime');
         },
         'show calendar': function(cmd) {
-          responsiveVoice.speak("Showing calendar");
-          var element = $('<div id="calendar" class="calendar xxsmall"></div>');
-          addElement(element, false);
-          calendar.init();
+    			executeCommand('show calendar');
         },
         'show compliment': function(cmd) {
-          responsiveVoice.speak("Showing compliment");
-          var element = $('<div id="compliment" class="compliment light"></div>');
-          addElement(element, false);
-          compliments.init();
+      		executeCommand('show compliment');
         },
         'show news': function(cmd) {
-          responsiveVoice.speak("Showing news");
-          var element = $('<div id="news" class="news medium"></div>');
-          addElement(element, false);
-          news.init();
-        },
+					executeCommand('show news');
+				},
         'show commute' : function(cmd) {
-          responsiveVoice.speak('Showing commute');
-          //var url = "vasttrafik.php";
-          //var output = $.getJSON(url, function(giphyresult) {
-          //    console.log(giphyresult);
-          //});
-          var element = $('<div id="commute" class="small dimmed"><iframe border="0" src="vasttrafik.php"></div>');
-          addElement(element, false);
+          executeCommand('show commute');
         },
        'animate *that': function(that) {
-          query = that.replace(/ /g, "+");
-          var url = "https://api.giphy.com/v1/gifs/search?q="+query+"&api_key=dc6zaTOxFJmzC";
-          var output = $.getJSON(url, function(giphyresult) {
-              console.log(giphyresult);
-              var giphUrl = giphyresult.data[0].images.fixed_width.url;
-              var element = $('<img width="300" id="animation" src="'+giphUrl+'">')
-              addElement(element, false);
-          });
+    			executeCommand('animate', that);
         },
         'refresh page': function(cmd) {
-          responsiveVoice.speak('Refreshing page.');
-          setTimeout(function() {
-            location.reload();
-          }, 1500);
+          executeCommand('refresh page');
         },
         'take selfie': function(cmd) {
-					if ($('#rpid').html() != '') {
-						var output = $.getJSON("picture.php", function(imgsrc) {
-		        	var element = $('<div class="image"><img src="/'+imgsrc+'" id="selfie" class="selfie" alt="selfie"></div><div class="watermark"></div>');
-		        	//alert('<img src="'+imgsrc+'" id="selfie" class="selfie" alt="selfie">');
-		      		addElement(element, false);
-					  });
-					} else {
-						responsiveVoice.speak('Smile! - Taking selfie.');
-	          var name = 'test.jpg';
-	          var element = $('<div class="image"><img src="img/selfie-stick-hipster.jpg" id="selfie" class="selfie" alt="selfie"></div><div class="watermark"></div>');
-	          //var element = '<iframe src="localhost://picture.php?name='+name+'">';
-	          addElement(element, false);
-					}
+					executeCommand('take selfie');
         },
         'send selfie': function(cmd) {
-					responsiveVoice.speak('Emailing selfie.');
-					if ($('#rpid').html() != '') {
-						$('.selfie').each(function( index ) {
-	  					//console.log( index + ": " + $( this ).attr('src') );
-							var output = $.getJSON("sendPicture.php?name="+$(this).attr('src'), function(imgsrc) {
-				      	//var element = $('<img src="/'+imgsrc+'" id="selfie" class="selfie" alt="selfie">');
-				        //alert('<img src="'+imgsrc+'" id="selfie" class="selfie" alt="selfie">');
-				      	//addElement(element, false);
-							});
-						});
-					} else {
-						// Don't do shit on dev
-						console.log("Pretending to email selfie from dev.");
-					}
-					$('.watermark').show();
+					executeCommand('send selfie');
         }
     };
 
     commands_str = $.map(commands, function(element,index) {return index});
+
+		function executeCommand(cmd, arg2 = false) {
+			resetIdleTime();
+			switch (cmd) {
+				case 'test':
+					console.log('test');
+					responsiveVoice.speak('Na zdorovje!', 'Russian Female');
+					responsiveVoice.speak('Hirven Mulkkuu!', 'Finnish Female');
+				break;
+				case 'help':
+					console.log('Showing help');
+					responsiveVoice.speak("Showing help");
+					responsiveVoice.speak("Visar hjelp", 'Swedish Female');
+					var help = '';
+					$.each(commands_str, function(index, value ) {
+						help +=  value + "<br/>";
+					});
+					//$('#text').text("Here is help...\n\n"+help);
+					var element = $('<div id="help" class="text">'+help+'</div>');
+					addElement(element, false);
+				break;
+				case 'show weather':
+					console.log('Showing weather');
+					responsiveVoice.speak("Showing weather");
+			var element = $('<div id="weather"><div class="temp"></div><div class="windsun small dimmed"></div><div class="forecast small dimmed"></div></div>');
+					addElement(element, false);
+					weather.init();
+				break;
+				case 'show datetime':
+					responsiveVoice.speak("Showing datetime");
+					var element = $('<div id="datetime"><div class="time" id="time"></div><div class="date small dimmed"></div></div>');
+					addElement(element, false);
+					time.init();
+				break;
+				case 'show calendar':
+					responsiveVoice.speak("Showing calendar");
+					var element = $('<div id="calendar" class="calendar xxsmall"></div>');
+					addElement(element, false);
+					calendar.init();
+				break;
+				case 'show compliment':
+					responsiveVoice.speak("Showing compliment");
+					var element = $('<div id="compliment" class="compliment light"></div>');
+					addElement(element, false);
+					compliments.init();
+				break;
+				case 'show news':
+					responsiveVoice.speak("Showing news");
+					var element = $('<div id="news" class="news medium"></div>');
+					addElement(element, false);
+					news.init();
+				break;
+				case 'show commute':
+					responsiveVoice.speak('Showing commute');
+					var element = $('<div id="commute" class="small dimmed"><iframe border="0" src="vasttrafik.php"></div>');
+					addElement(element, false);
+				break;
+				case 'sticky':
+					console.log('sticky '+arg2);
+					responsiveVoice.speak('Will now stick '+arg2);
+					keepElement(arg2);
+				break;
+				case 'drop':
+					console.log('drop '+arg2);
+					responsiveVoice.speak('Will now be dropping '+arg2);
+					findAndHide(arg2);
+				break;
+				case 'dictate':
+					console.log('text! '+arg2);
+					responsiveVoice.speak('Dictating '+arg2);
+					$('#text').text(arg2);
+				break;
+				case 'refresh page':
+					responsiveVoice.speak('Refreshing page.');
+					setTimeout(function() {
+						location.reload();
+					}, 1500);
+				break;
+				case 'animate':
+					responsiveVoice.speak('Animating '+arg2);
+					query = arg2.replace(/ /g, "+");
+					var url = "https://api.giphy.com/v1/gifs/search?q="+query+"&api_key=dc6zaTOxFJmzC";
+					var output = $.getJSON(url, function(giphyresult) {
+							console.log(giphyresult);
+							var giphUrl = giphyresult.data[0].images.fixed_width.url;
+							var element = $('<img width="300" id="animation" src="'+giphUrl+'">')
+							addElement(element, false);
+					});
+				break;
+				case 'take selfie':
+					if ($('#rpid').html() != '') {
+						var output = $.getJSON("picture.php", function(imgsrc) {
+							var element = $('<div class="image"><img src="/'+imgsrc+'" id="selfie" class="selfie" alt="selfie"></div><div class="watermark"></div>');
+							//alert('<img src="'+imgsrc+'" id="selfie" class="selfie" alt="selfie">');
+							addElement(element, false);
+						});
+					} else {
+						responsiveVoice.speak('Smile! - Taking selfie.');
+						var name = 'test.jpg';
+						var element = $('<div class="image"><img src="img/selfie-stick-hipster.jpg" id="selfie" class="selfie" alt="selfie"></div><div class="watermark"></div>');
+						//var element = '<iframe src="localhost://picture.php?name='+name+'">';
+						addElement(element, false);
+					}
+					break;
+					case 'send selfie':
+						responsiveVoice.speak('Emailing selfie.');
+						if ($('#rpid').html() != '') {
+							$('.selfie').each(function( index ) {
+								//console.log( index + ": " + $( this ).attr('src') );
+								var output = $.getJSON("sendPicture.php?name="+$(this).attr('src'), function(imgsrc) {
+									//var element = $('<img src="/'+imgsrc+'" id="selfie" class="selfie" alt="selfie">');
+									//alert('<img src="'+imgsrc+'" id="selfie" class="selfie" alt="selfie">');
+									//addElement(element, false);
+								});
+							});
+						} else {
+							// Don't do shit on dev
+							console.log("Pretending to email selfie from dev.");
+						}
+						$('.watermark').show();
+					break;
+				}
+		}
+
+		var idleTime = 0;
+		$(document).ready(function () {
+		    //Increment the idle time counter every minute.
+		    //var idleInterval = setInterval(timerIncrement, 60000); // 1 minute
+				var idleInterval = setInterval(timerIncrement, 1000);
+		    //Zero the idle timer on mouse movement.
+		    $(this).mousemove(function (e) {
+		        idleTime = 0;
+		    });
+		    $(this).keypress(function (e) {
+		        idleTime = 0;
+		    });
+		});
+
+		function timerIncrement() {
+		    idleTime = idleTime + 1;
+				console.log(idleTime);
+		    if (idleTime >= 10) {
+		        console.log('Should start motion detection now.')
+						idleTime = 0;
+						$('#bg').animate({ opacity: 0 }, 1000);
+		    }
+		}
+
+		function resetIdleTime() {
+			console.log('Resetting idleTime');
+			idleTime = 0;
+		}
 
 		$(document).keypress(function(e) {
 		    if(e.which == 13) {
@@ -241,6 +325,9 @@
                 }
             }
         });
+				if (!done) {
+					console.log('All slots are busy, sorry.');
+				}
         // TODO: fixa vad som händer när alla slots är fyllda
     }
 
@@ -317,14 +404,20 @@ jQuery(document).ready(function($) {
 //}, 300000);
 </script>
 
-<a href="#" onclick="location.reload()">debug</a>
-<p id="text" class="text" style="white-space: pre-wrap;"></p>
+<div id="bg">
+<div>
+	<a style="font-size: 12px; clear: both;" href="#" onclick="location.reload()">debug</a>
+</div>
+<span id="text" class="text" style="white-space: pre-wrap;"></span>
 <div class="slot" id="slot1" style="display: none; float: left; clear: left"></div>
 <div class="slot" id="slot2" style="display: none; float: right; clear: right"></div>
 <div class="slot" id="slot3" style="display: none; float: left; clear: left"></div>
 <div class="slot" id="slot3" style="display: none; float: right; clear: right"></div>
 <div class="slot" id="slot5" style="display: none; float: left; clear: left"></div>
 <div class="slot" id="slot6" style="display: none; float: right; clear: right"></div>
+<div class="slot" id="slot7" style="display: none; float: left; clear: left"></div>
+<div class="slot" id="slot8" style="display: none; float: right; clear: right"></div>
+</div>
 
 <script src="js/jquery.js"></script>
 <script src="js/jquery.feedToJSON.js"></script>
